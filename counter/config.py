@@ -5,16 +5,25 @@ from counter.adapters.object_detector import TFSObjectDetector, FakeObjectDetect
 from counter.domain.actions import CountDetectedObjects, PredictionsListAction
 
 
+def init_tfs():
+    tfs_host = os.environ.get('TFS_HOST', 'localhost')
+    tfs_port = os.environ.get('TFS_PORT', 8501)
+    return tfs_host, tfs_port
+
+def init_mongodb():
+    mongo_host = os.environ.get('MONGO_HOST', 'localhost')
+    mongo_port = os.environ.get('MONGO_PORT', 27017)
+    mongo_db = os.environ.get('MONGO_DB', 'prod_counter')
+    return mongo_host, mongo_port, mongo_db
+
+
 def dev_count_action() -> CountDetectedObjects:
     return CountDetectedObjects(FakeObjectDetector(), CountInMemoryRepo())
 
 
 def prod_count_action() -> CountDetectedObjects:
-    tfs_host = os.environ.get('TFS_HOST', 'localhost')
-    tfs_port = os.environ.get('TFS_PORT', 8501)
-    mongo_host = os.environ.get('MONGO_HOST', 'localhost')
-    mongo_port = os.environ.get('MONGO_PORT', 27017)
-    mongo_db = os.environ.get('MONGO_DB', 'prod_counter')
+    tfs_host, tfs_port = init_tfs()
+    mongo_host, mongo_port, mongo_db = init_mongodb()
     return CountDetectedObjects(TFSObjectDetector(tfs_host, tfs_port, 'rfcn'),
                                 CountMongoDBRepo(host=mongo_host, port=mongo_port, database=mongo_db))
 
@@ -30,8 +39,7 @@ def dev_predictions_list_action() -> PredictionsListAction:
 
 
 def prod_predictions_list_action() -> PredictionsListAction:
-    tfs_host = os.environ.get('TFS_HOST', 'localhost')
-    tfs_port = os.environ.get('TFS_PORT', 8501)
+    tfs_host, tfs_port = init_tfs()
     return PredictionsListAction(TFSObjectDetector(tfs_host, tfs_port, 'rfcn'))
 
 
