@@ -9,6 +9,7 @@ def create_app():
     app = Flask(__name__)
     
     count_action = config.get_count_action()
+    predictions_list_action = config.get_predictions_list_action()
     
     @app.route('/object-count', methods=['POST'])
     def object_detection():
@@ -20,6 +21,16 @@ def create_app():
         uploaded_file.save(image)
         count_response = count_action.execute(image, threshold)
         return jsonify(count_response)
+    
+    @app.route('/predictions-list', methods=['POST'])
+    def predictions_list():
+        
+        threshold = float(request.form.get('threshold', 0.5))
+        uploaded_file = request.files['file']
+        image = BytesIO()
+        uploaded_file.save(image)
+        predictions_list_response = predictions_list_action.execute(image, threshold)
+        return jsonify(predictions_list_response)
     
     return app
 
