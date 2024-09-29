@@ -1,6 +1,7 @@
 from typing import List
 
 from pymongo import MongoClient
+from sqlalchemy import create_engine, text
 
 from counter.domain.models import ObjectCount
 from counter.domain.ports import ObjectCountRepo
@@ -54,3 +55,32 @@ class CountMongoDBRepo(ObjectCountRepo):
         for value in new_values:
             counter_col.update_one({'object_class': value.object_class}, {'$inc': {'count': value.count}}, upsert=True)
 
+
+class CountPostgreSQLRepo(ObjectCountRepo):
+
+    def __init__(self, host, port, database, user, password):
+        self.__engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
+
+    def __build_query(self, object_classes: List[str]):
+        query = "select object_class, count from counter"
+        if object_classes:
+            object_classes_str = "'" + "','".join(object_classes) + "'"
+            query += f" where object_class in ({object_classes_str})"
+        return query
+
+    def read_values(self, object_classes: List[str] = None) -> List[ObjectCount]:
+        query = self.__build_query(object_classes)
+        with self.__engine.connect() as conn:
+            counters = conn.execute(text(query))
+        object_counts = []
+        for counter in counters:
+            object_counts.append(ObjectCount(counter[0], counter[1]))
+        return object_counts
+
+    def update_values(self, new_values: List[ObjectCount]):
+        for value in new_values:
+            with self.__engine.connect() as conn:
+                conn.execute(text(f"""INSERT INTO counter (object_class, count) 
+                                      VALUES ('{value.object_class}', {value.count}) ON CONFLICT (object_class) 
+                                      DO UPDATE SET count = counter.count+{value.count}"""))
+                conn.commit()

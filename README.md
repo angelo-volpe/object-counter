@@ -74,6 +74,18 @@ docker rm -f test-mongo
 docker run --name test-mongo --rm -p 27017:27017 -d mongo:latest
 ```
 
+## Run postgres 
+
+```bash
+docker rm -f test-postgres
+docker run --name test-postgres \
+        --rm -p 5432:5432 \
+        -e POSTGRES_USER=counter_user \
+        -e POSTGRES_PASSWORD=counter_password \
+        -e POSTGRES_DB=prod_counter \
+        -v $(pwd)/tmp/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql \
+        -d postgres:latest
+```
 
 ## Setup virtualenv
 
@@ -91,14 +103,21 @@ pip install -r requirements.txt
 python -m counter.entrypoints.webapp
 ```
 
+### Choosing the DB to use as repo
+In order to choose which DB to use as repo you can set the environment variable REPO with one of the following values:
+- postgres
+- mongodb
+- in_memory
+
 ### Using real services in docker containers
 
 ```
 # Unix
-ENV=prod python -m counter.entrypoints.webapp
+ENV=prod REPO=mongodb python -m counter.entrypoints.webapp
 
 # Powershell
 $env:ENV = "prod"
+$env:REPO = "mongodb"
 python -m counter.entrypoints.webapp
 ```
 
