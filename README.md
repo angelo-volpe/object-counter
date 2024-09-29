@@ -134,3 +134,8 @@ python -m counter.entrypoints.webapp
 ```
 pytest
 ```
+
+## Generate requirements.txt
+```
+pip-compile requirements.in > requirements.txt
+```
