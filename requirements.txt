@@ -28,10 +28,14 @@ markupsafe==2.1.5
     # via
     #   jinja2
     #   werkzeug
+marshmallow==3.22.0
+    # via -r requirements.in
 numpy==1.23.5
     # via -r requirements.in
 packaging==24.1
-    # via pytest
+    # via
+    #   marshmallow
+    #   pytest
 pillow==9.5.0
     # via -r requirements.in
 pluggy==0.13.1
