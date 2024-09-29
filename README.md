@@ -83,7 +83,7 @@ docker run --name test-postgres \
         -e POSTGRES_USER=counter_user \
         -e POSTGRES_PASSWORD=counter_password \
         -e POSTGRES_DB=prod_counter \
-        -v $(pwd)/tmp/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql \
+        -v $(pwd)/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql \
         -d postgres:latest
 ```
 
