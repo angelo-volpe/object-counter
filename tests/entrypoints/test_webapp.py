@@ -1,24 +1,6 @@
 import io
 import json
 
-import pytest
-
-from pathlib import Path
-from counter.entrypoints.webapp import create_app
-
-
-@pytest.fixture
-def client():
-    app = create_app()
-    app.config['TESTING'] = True
-    with app.test_client() as client:
-        yield client
-
-@pytest.fixture
-def image_path():
-    ref_dir = Path(__file__).parent
-    return ref_dir.parent.parent / "resources" / "images" / "boy.jpg"
-
 
 def test_object_detection(client, image_path):
     # Load the image from the path resource/boy.jpg
@@ -54,7 +36,7 @@ def test_predictions_list(client, image_path):
     }
     data['file'] = (image, 'test.jpg')
 
-    # Make a test request to the object_detection endpoint
+    # Make a test request to the predictions-list endpoint
     response = client.post('/predictions-list', data = data,
         content_type='multipart/form-data', buffered=True)
 

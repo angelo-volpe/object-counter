@@ -103,25 +103,30 @@ pip install -r requirements.txt
 python -m counter.entrypoints.webapp
 ```
 
-### Choosing the DB to use as repo
-In order to choose which DB to use as repo you can set the environment variable REPO with one of the following values:
-- postgres
-- mongodb
-- in_memory
+### Testing postgres with fake model
+```
+# Unix
+ENV=dev_postgres python -m counter.entrypoints.webapp
+
+# Powershell
+$env:ENV = "dev_postgres"
+python -m counter.entrypoints.webapp
+```
 
 ### Using real services in docker containers
 
 ```
 # Unix
-ENV=prod REPO=mongodb python -m counter.entrypoints.webapp
+ENV=prod python -m counter.entrypoints.webapp
 
 # Powershell
 $env:ENV = "prod"
-$env:REPO = "mongodb"
 python -m counter.entrypoints.webapp
 ```
 
-## Call the service
+## Call the services
+
+Object Count Service
 
 ```shell script
  curl -F "threshold=0.9" -F "file=@resources/images/boy.jpg" http://0.0.0.0:5000/object-count
@@ -129,9 +134,18 @@ python -m counter.entrypoints.webapp
  curl -F "threshold=0.9" -F "file=@resources/images/food.jpg" http://0.0.0.0:5000/object-count 
 ```
 
+Predictions List Service
+
+```shell script
+ curl -F "threshold=0.9" -F "file=@resources/images/boy.jpg" http://0.0.0.0:5000/predictions-list
+ curl -F "threshold=0.9" -F "file=@resources/images/cat.jpg" http://0.0.0.0:5000/predictions-list
+ curl -F "threshold=0.9" -F "file=@resources/images/food.jpg" http://0.0.0.0:5000/predictions-list
+```
+
 ## Run the tests
 
 ```
+pip install -r requirements.dev
 pytest
 ```
 

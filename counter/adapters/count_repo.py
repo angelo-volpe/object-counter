@@ -31,13 +31,11 @@ class CountInMemoryRepo(ObjectCountRepo):
 class CountMongoDBRepo(ObjectCountRepo):
 
     def __init__(self, host, port, database):
-        self.__host = host
-        self.__port = port
         self.__database = database
+        self.__client = MongoClient(host, int(port))
 
     def __get_counter_col(self):
-        client = MongoClient(self.__host, self.__port)
-        db = client[self.__database]
+        db = self.__client[self.__database]
         counter_col = db.counter
         return counter_col
 

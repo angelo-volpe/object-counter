@@ -3,7 +3,7 @@ from werkzeug.datastructures import FileStorage
 
 
 class ImageWithTresholdSchema(Schema):
-    file = fields.Raw(required=True, type=FileStorage)
+    file = fields.Raw(required=True, metadata={"type": FileStorage})
     threshold = fields.String(required=True)
 
     @validates('file')
