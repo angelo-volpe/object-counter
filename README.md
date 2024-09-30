@@ -142,11 +142,11 @@ Predictions List Service
  curl -F "threshold=0.9" -F "file=@resources/images/food.jpg" http://0.0.0.0:5000/predictions-list
 ```
 
-## Run the tests
+## Run the tests and show coverage
 
 ```
 pip install -r requirements.dev
-pytest
+coverage run -m pytest && coverage report
 ```
 
 ## Generate requirements.txt
