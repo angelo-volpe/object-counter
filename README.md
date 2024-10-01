@@ -96,6 +96,11 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
+## Generate requirements.txt
+```
+pip-compile requirements.in > requirements.txt
+```
+
 ## Run the application
 
 ### Using fakes
@@ -103,7 +108,7 @@ pip install -r requirements.txt
 python -m counter.entrypoints.webapp
 ```
 
-### Testing postgres with fake model
+### Run with postgres in dev
 ```
 # Unix
 ENV=dev_postgres python -m counter.entrypoints.webapp
@@ -147,9 +152,4 @@ Predictions List Service
 ```
 pip install -r requirements.dev
 coverage run -m pytest && coverage report
-```
-
-## Generate requirements.txt
-```
-pip-compile requirements.in > requirements.txt
 ```
